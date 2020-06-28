@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tab1"
+        app:showAsAction="always"
+        android:icon="@drawable/write_48"
+        android:enabled="true"
+        android:checked="true"
+        android:title="사진찍기"/>
+
+    <item
+        android:id="@+id/tab2"
+        app:showAsAction="always"
+        android:icon="@drawable/list_48"
+        android:enabled="true"
+        android:checked="true"
+        android:title="앨범"/>
+
+</menu>
