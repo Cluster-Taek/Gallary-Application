@@ -39,6 +39,7 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_fragment2,container,false);
         gridView = viewGroup.findViewById(R.id.gridView);
+        fragment3 = new Fragment3();
         myDBHelper = new MyDBHelper(getActivity());
         imageFiles = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
         //imageList = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
@@ -46,7 +47,6 @@ public class Fragment2 extends Fragment {
         for(int i = 0; i < imageFiles.length; i++) {
             imageList.add(imageFiles[i]);
         }
-        //adapter = new ImageAdapter(getActivity(), imageFiles);
         adapter = new ImageAdapter(getActivity(), imageList);
         gridView.setAdapter(adapter);
         return viewGroup;
@@ -93,12 +93,11 @@ public class Fragment2 extends Fragment {
                 @Override
                 public void onClick(View view) {
                     db = myDBHelper.getReadableDatabase();
-                    Cursor cursor = db.rawQuery("select * from imagelist where imageid ='"+ String.valueOf(i) +"'", null);
+                    Cursor cursor = db.rawQuery("select * from imagelist where imageid ='"+ String.valueOf(i+1) +"'", null);
                     while(cursor.moveToNext()) {
                         Bundle bundle = new Bundle();
                         bundle.putString("fileName", cursor.getString(1));
                         bundle.putString("detail", cursor.getString(2));
-                        fragment3 = new Fragment3();
                         fragment3.setArguments(bundle);
                     }
                     cursor.close();

@@ -9,9 +9,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.TabActivity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction tran;
     Fragment1 fragment1;
     Fragment2 fragment2;
+    MyDBHelper myDBHelper;
+    SQLiteDatabase db;
 
 
     @Override
@@ -36,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
 
+        myDBHelper = new MyDBHelper(this);
+
+        db = myDBHelper.getWritableDatabase();
+        myDBHelper.onUpgrade(db,1,2);
+        db.close();
+        Toast.makeText(this,"데이터베이스가 초기화 됩니다.",Toast.LENGTH_SHORT).show();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment1).commitAllowingStateLoss();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

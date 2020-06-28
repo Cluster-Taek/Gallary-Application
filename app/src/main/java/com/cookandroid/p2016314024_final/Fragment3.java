@@ -28,7 +28,8 @@ public class Fragment3 extends Fragment {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_fragment3,container,false);
         iv3 = (ImageView)viewGroup.findViewById(R.id.imageView3);
         tv1 = (TextView)viewGroup.findViewById(R.id.textView);
-
+        iv3.setImageResource(R.drawable.ic_launcher_foreground);
+        tv1.setText("데이터베이스가 초기화 되었으므로\n사진을 삭제해주시기 바랍니다.");
         if(getArguments() != null) {
             String fileName = getArguments().getString("fileName");
             String detail = getArguments().getString("detail");//bundle.getString("detail");
