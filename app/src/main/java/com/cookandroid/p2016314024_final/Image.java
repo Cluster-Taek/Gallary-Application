@@ -1,12 +1,17 @@
 package com.cookandroid.p2016314024_final;
 
+import android.graphics.Bitmap;
+
 public class Image {
     int imageId;
-    String picture;
+    Bitmap picture;
     String detail;
 
-    public Image(int imageId, String picture, String detail) {
-        this.imageId = imageId;
+    public Image() {
+
+    }
+
+    public Image(Bitmap picture, String detail) {
         this.picture = picture;
         this.detail = detail;
     }
@@ -19,11 +24,11 @@ public class Image {
         this.imageId = imageId;
     }
 
-    public String getPicture() {
+    public Bitmap getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(Bitmap picture) {
         this.picture = picture;
     }
 

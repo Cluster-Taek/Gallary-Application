@@ -1,98 +1,89 @@
 package com.cookandroid.p2016314024_final;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
-
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public class Fragment2 extends Fragment {
     ViewGroup viewGroup;
-    RecyclerView recyclerView;
+    GridView gridView;
     ImageAdapter adapter;
-    Context context;
-    TabHost.OnTabChangeListener listener;
+    ArrayList<File> imageList = new ArrayList<File>();
+    File[] imageFiles;
+    int index = 0;
 
-    Button btn1, btn2;
-    SQLiteDatabase db;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_fragment2,container,false);
-        initUI(viewGroup);
+        gridView = viewGroup.findViewById(R.id.gridView);
 
-        loadImageListData();
+        imageFiles = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
+        //imageList = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
+        for(int i = 0; i < imageFiles.length; i++) {
+            imageList.add(imageFiles[i]);
+        }
+        //adapter = new ImageAdapter(getActivity(), imageFiles);
+        adapter = new ImageAdapter(getActivity(), imageList);
+        gridView.setAdapter(adapter);
         return viewGroup;
     }
 
-    private void initUI(ViewGroup viewGroup) {
+    private class ImageAdapter extends BaseAdapter {
 
-        recyclerView = viewGroup.findViewById(R.id.recyclerView);
+        ArrayList<File> items;
+        Context context = null;
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-
-        adapter = new ImageAdapter();
-
-        adapter.addItem(new Image(0,"123.jpg","첫 디테일"));
-
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener(new OnImageItemClickListner() {
-            @Override
-            public void onItemClick(ImageAdapter.ViewHolder holder, View view, int position) {
-                Image item = adapter.getItem(position);
-
-            }
-        });
-
-    }
-    public int loadImageListData() {
-
-        String sql = "select _id, PICTURE, DETAIL";
-
-        int recordCount = -1;
-        ImageDatabase database = ImageDatabase.getInstance(context);
-        if (database != null) {
-            Cursor outCursor = database.rawQuery(sql);
-
-            recordCount = outCursor.getCount();
-
-            ArrayList<Image> items = new ArrayList<Image>();
-
-            for (int i = 0; i < recordCount; i++) {
-                outCursor.moveToNext();
-
-                int _id = outCursor.getInt(0);
-                String picture = outCursor.getString(1);
-                String detail = outCursor.getString(2);
-
-                items.add(new Image(_id, picture, detail));
-            }
-
-            outCursor.close();
-
-            adapter.setItems(items);
-            adapter.notifyDataSetChanged();
-
+        public ImageAdapter(Context context, ArrayList<File> items) {
+            this.context = context;
+            this.items = items;
+        }
+        @Override
+        public int getCount() {
+            return items.size();
         }
 
-        return recordCount;
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ImageView imageView = null;
+
+            if (null != view)
+                imageView = (ImageView)view;
+            else {
+                Bitmap bmp = BitmapFactory.decodeFile(imageList.get(index++).toString());
+                imageView = new ImageView(context);
+                imageView.setAdjustViewBounds(true);
+                imageView.setImageBitmap(bmp);
+            }
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(),"이거 뜨냐?",Toast.LENGTH_SHORT).show();
+                }
+            });
+            return imageView;
+        }
     }
 }

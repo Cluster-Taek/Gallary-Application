@@ -7,10 +7,9 @@
     android:orientation="vertical"
     tools:context=".Fragment2">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#AAAAAA"/>
+        android:layout_height="wrap_content"
+        android:numColumns="3"/>
 </LinearLayout>
