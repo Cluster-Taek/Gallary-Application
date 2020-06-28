@@ -1,5 +1,6 @@
 package com.cookandroid.p2016314024_final;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,6 +33,10 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Fragment1 extends Fragment {
+
+    public static Fragment1 newInstance() {
+        return new Fragment1();
+    }
 
     ViewGroup viewGroup;
     Button button;
@@ -42,10 +49,9 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_fragment1,container,false);
 
-
         button = (Button)viewGroup.findViewById(R.id.button);
         iv = (ImageView)viewGroup.findViewById(R.id.imageView);
-
+        myDBHelper = new MyDBHelper(getActivity());
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -85,16 +91,38 @@ public class Fragment1 extends Fragment {
                             e.printStackTrace();
                         }
                         iv.setImageBitmap(bitmap);
+                        iv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                AlertDialog.Builder dig = new AlertDialog.Builder(getActivity());
+                                final EditText input = new EditText(getActivity());
+                                dig.setView(input);
+                                dig.setTitle("사진정보입력");
+                                dig.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                                dig.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        db = myDBHelper.getWritableDatabase();
+                                        ContentValues row = new ContentValues();
+                                        row.put("picture", Environment
+                                                .getExternalStorageDirectory().getAbsolutePath()+"/Pictures/"+fileName);
+                                        row.put("detail", input.getText().toString());
+                                        db.insert("imagelist", null, row);
+                                        db.close();
+                                        Toast.makeText(getActivity(),"입력 성공",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                dig.show();
+                            }
+                        });
                     }
 
                 }
-                /*
-                db = myDBHelper.getWritableDatabase();
-                ContentValues row = new ContentValues();
-                row.put("picture", fileName);
-                row.put("detail","");
-                db.insert("imagelist", null, row);
-                db.close();*/
                 break;
         }
     }

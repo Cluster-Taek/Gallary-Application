@@ -2,6 +2,9 @@ package com.cookandroid.p2016314024_final;
 
 import androidx.fragment.app.Fragment;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -24,6 +27,12 @@ public class Fragment2 extends Fragment {
     ArrayList<File> imageList = new ArrayList<File>();
     File[] imageFiles;
     int index = 0;
+    MyDBHelper myDBHelper;
+    SQLiteDatabase db;
+
+    public static Fragment2 newInstance() {
+        return new Fragment2();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,10 +89,34 @@ public class Fragment2 extends Fragment {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(),"이거 뜨냐?",Toast.LENGTH_SHORT).show();
+                    db = myDBHelper.getReadableDatabase();
+                    Cursor cursor  = db.rawQuery("select * from imagelist", null);
+                    while(cursor.moveToNext()) {
+
+                    }
+                    cursor.close();
+                    db.close();
+                    ((MainActivity)getActivity()).replaceFragment(Fragment3.newInstance());
                 }
             });
             return imageView;
+        }
+    }
+
+    private class MyDBHelper extends SQLiteOpenHelper {
+        public MyDBHelper(Context context) {
+            super(context, "IMAGE", null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE imagelist ( imageid INTEGER PRIMARY KEY autoincrement, picture text, detail text);");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS imagelist");
+            onCreate(db);
         }
     }
 }

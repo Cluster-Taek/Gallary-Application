@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction tran;
     Fragment1 fragment1;
     Fragment2 fragment2;
+    Fragment3 fragment3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
+        fragment3 = new Fragment3();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment1).commitAllowingStateLoss();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,5 +55,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_layout, fragment).commit();
     }
 }
