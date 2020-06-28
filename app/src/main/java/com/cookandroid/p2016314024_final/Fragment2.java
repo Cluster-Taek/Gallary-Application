@@ -29,6 +29,7 @@ public class Fragment2 extends Fragment {
     int index = 0;
     MyDBHelper myDBHelper;
     SQLiteDatabase db;
+    Fragment3 fragment3;
 
     public static Fragment2 newInstance() {
         return new Fragment2();
@@ -38,9 +39,10 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_fragment2,container,false);
         gridView = viewGroup.findViewById(R.id.gridView);
-
+        myDBHelper = new MyDBHelper(getActivity());
         imageFiles = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
         //imageList = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
+        imageList.clear();
         for(int i = 0; i < imageFiles.length; i++) {
             imageList.add(imageFiles[i]);
         }
@@ -56,6 +58,7 @@ public class Fragment2 extends Fragment {
         Context context = null;
 
         public ImageAdapter(Context context, ArrayList<File> items) {
+            index = 0;
             this.context = context;
             this.items = items;
         }
@@ -75,7 +78,7 @@ public class Fragment2 extends Fragment {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(final int i, View view, ViewGroup viewGroup) {
             ImageView imageView = null;
 
             if (null != view)
@@ -90,33 +93,20 @@ public class Fragment2 extends Fragment {
                 @Override
                 public void onClick(View view) {
                     db = myDBHelper.getReadableDatabase();
-                    Cursor cursor  = db.rawQuery("select * from imagelist", null);
+                    Cursor cursor = db.rawQuery("select * from imagelist where imageid ='"+ String.valueOf(i) +"'", null);
                     while(cursor.moveToNext()) {
-
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileName", cursor.getString(1));
+                        bundle.putString("detail", cursor.getString(2));
+                        fragment3 = new Fragment3();
+                        fragment3.setArguments(bundle);
                     }
                     cursor.close();
                     db.close();
-                    ((MainActivity)getActivity()).replaceFragment(Fragment3.newInstance());
+                    ((MainActivity)getActivity()).replaceFragment(fragment3);
                 }
             });
             return imageView;
-        }
-    }
-
-    private class MyDBHelper extends SQLiteOpenHelper {
-        public MyDBHelper(Context context) {
-            super(context, "IMAGE", null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE imagelist ( imageid INTEGER PRIMARY KEY autoincrement, picture text, detail text);");
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS imagelist");
-            onCreate(db);
         }
     }
 }

@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,13 @@ public class Fragment3 extends Fragment {
         iv3 = (ImageView)viewGroup.findViewById(R.id.imageView3);
         tv1 = (TextView)viewGroup.findViewById(R.id.textView);
 
+        if(getArguments() != null) {
+            String fileName = getArguments().getString("fileName");
+            String detail = getArguments().getString("detail");//bundle.getString("detail");
+            Bitmap bmp = BitmapFactory.decodeFile(fileName);
+            tv1.setText(detail);
+            iv3.setImageBitmap(bmp);
+        }
         return viewGroup;
     }
 }
